@@ -1,0 +1,39 @@
+select {
+    font-size: 12px
+}
+
+.js_row {
+    position: relative;
+    margin-top: 20px;
+}
+
+.js_add_row {
+    position: absolute;
+    border: 1px green solid;
+    width: 20px;
+    text-align: center;
+    left: -20px;
+    top: 10px
+}
+
+.js_add_cell {
+    position: absolute;
+    right: -20px;
+    border: 1px green solid;
+    width: 20px;
+    text-align: center
+}
+
+.js_cell {
+    position: relative;
+    border: 1px red solid;    
+}
+
+.js_cell_col {
+    position: absolute;
+    //border: 1px green solid;
+    width: 40px;
+    top: 0px;
+    right: 0px;
+    vertical-align: top;
+}
