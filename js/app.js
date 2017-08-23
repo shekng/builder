@@ -25,7 +25,7 @@ require.config({
     }
   },
   paths: {
-      jquery: 'libs/jquery-2.0.3.min',
+      jquery: 'libs/jquery-3.2.1',
       underscore: 'libs/underscore-min',
       backbone: 'libs/backbone-min',
       text: 'libs/text',
@@ -35,7 +35,7 @@ require.config({
 });
 
 //Start up our App
-require([
+require([    
     'backbone',
     'marionette',
     'backbone.radio',
