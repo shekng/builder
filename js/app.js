@@ -59,6 +59,44 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
         }
     });
     
+    var Menu = Mn.View.extend({
+        el: ".menu",
+        template: _.noop,
+        events: {
+            "click div": "clickItem"
+        },
+        onRender: function() {
+            this.oRow = undefined;            
+        },
+        show: function(oRow, sAction) {            
+            this.oRow = oRow;
+            this.sAction = sAction;
+            this.trigger = (sAction === "row") ? oRow.$addRow[0] : oRow.$addCell[0];
+            
+            var pos = this.trigger.getBoundingClientRect();
+            
+            this.$el.css({top: pos.top + 25, left: pos.left}).show();
+        },
+        clickItem: function(event) {
+            var me = this;
+            var method = (this.sAction === "row") ? this.oRow.addRow: this.oRow.addCell;
+            
+            switch (event.currentTarget.innerText) {
+                case "Text":
+                    method.call(this.oRow, "Enter text here");
+                    break;
+                case "Image":
+                    method.call(this.oRow, "<img src='https://pbs.twimg.com/profile_images/715995939752775681/ABFhhNE4.jpg' />");
+                    break;
+                case "Button":
+                    method.call(this.oRow, "<button>Click Me</button>");
+                    break;
+            }
+            
+            me.$el.hide();
+        }
+    });
+    
     var Row = Mn.View.extend({
         template: _.noop,
         onRender: function(){
@@ -74,17 +112,50 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
             });
             
             this.$addRow.click(function(){
+                window.menu.show(me, "row");
+                /*
                 var $newRow = $("<div class='row js_row'><div class='cell col-12'>Text</div></div>");
                 me.$el.after($newRow);
                 new Row({el: $newRow[0]}).render();                    
+                */
             });
             
             this.$addCell.click(function(){
-                var $newCell = $("<div class='cell col-12'>Text</div>");
+                window.menu.show(me, "cell");
+                /*
+                var $newCell = $("<div class='cell'>Text</div>");
                 me.$el.append($newCell);
                 new Cell({el: $newCell[0]}).render();                    
-            });
-        } 
+                me.splitCol();
+                */
+            });    
+            
+            this.$el.data("cell" ,this);
+        }, 
+        addCell: function(sHtml) {
+            var me = this;
+            var $newCell = $("<div class='cell'>" + sHtml + "</div>");
+            
+            me.$el.append($newCell);
+            new Cell({el: $newCell[0]}).render();                    
+            me.splitCol();
+        },
+        addRow: function(sHtml) {
+            var me = this;
+            var $newRow = $("<div class='row js_row'><div class='cell col-12'>" + sHtml + "</div></div>");
+            
+            me.$el.after($newRow);
+            new Row({el: $newRow[0]}).render();                    
+        },
+        splitCol: function() {
+            var me = this, arrCell = me.$el.find(".cell");
+            var iSize = Math.floor(12 / arrCell.length);
+            
+            arrCell.each(function(){
+                $(this).data("cell").changeCellCol(iSize);
+            })
+            console.log(iSize);
+        }
     });
     
     var Cell = Mn.View.extend({
@@ -96,25 +167,7 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
             this.$col = $("<div class='js_cell_col'>" + this.generateColDropdown() + "</div>");
             this.$sel = this.$col.find("select");
             this.$sel.change(function() {
-             
-                me.$el.removeClass(function(i, sClass) {                    
-                    var classes = sClass.split(" ");
-                    var remove = [];
-                    
-                    $.each(classes, function() {
-                        if (window.device === "" && this.match(new RegExp("col-\\d"))) {
-                            remove.push(this);
-                        }
-                        else if (this.match(new RegExp("col-"+window.device+"-\\d"))) {
-                            remove.push(this);
-                        }
-                    });
-                    
-                    return remove.join(" ");
-                });    
-                                
-                me.$el.addClass("col" + ((window.device === "") ? "": "-" + window.device) + "-" + this.value);
-                //$(this).val(this.value);
+                me.changeCellCol(this.value);
             });
             this.$el.append(this.$col);
             /*
@@ -129,6 +182,28 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
             return "<select><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option>" +
                 "<option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option>" + 
                 "<option value='9'>9</option><option value='10'>10</option><option value='11'>11</option><option value='12'>12</option></select>";
+        },
+        changeCellCol: function(iSize) {
+            var me = this;
+            
+            me.$el.removeClass(function(i, sClass) {                    
+                var classes = sClass.split(" ");
+                var remove = [];
+
+                $.each(classes, function() {
+                    if (window.device === "" && this.match(new RegExp("col-\\d"))) {
+                        remove.push(this);
+                    }
+                    else if (this.match(new RegExp("col-"+window.device+"-\\d"))) {
+                        remove.push(this);
+                    }
+                });
+
+                return remove.join(" ");
+            });    
+
+            me.$el.addClass("col" + ((window.device === "") ? "": "-" + window.device) + "-" + iSize);
+            me.$sel.val(iSize);
         },
         onUpdateCol: function() {
             this.$sel.val( this.findCol(this.$el.css("flex")) );
@@ -209,6 +284,9 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
                 
                 console.log(window.device);
             });
+            
+            window.menu = new Menu().render();
+            
             //this.getRegion("cell0").options.currentView = new mpText({el: "#text1"});
             //this.getRegion("cell1").options.currentView = new mpText({el: "#text2"});
             //this.cell0.attachView(new mpText({el: "#text1"}));

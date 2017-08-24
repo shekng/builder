@@ -50,7 +50,7 @@ select {
 
 .js_cell {
     position: relative;
-    border: 1px red solid;    
+    border: 1px blue solid;    
 }
 
 .js_cell_col {
@@ -60,4 +60,20 @@ select {
     top: 0px;
     right: 0px;
     vertical-align: top;
+}
+
+.menu {
+    position: absolute;
+    display: none;
+}
+
+.menu > div {
+    border: 1px green solid;
+    width: 60px;
+    padding: 5px;
+    font-size: 12px
+}
+
+img {
+    width: 100px;
 }
