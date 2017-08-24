@@ -64,7 +64,7 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
         onRender: function(){
             var me = this;
             
-            this.$addRow = $("<div class='js_add_row'>+</div>");
+            this.$addRow = $("<div class='js_add_row'><div>+</div></div>");
             this.$addCell = $("<div class='js_add_cell'>+</div>");
             this.$el.append(this.$addRow);
             this.$el.append(this.$addCell);
@@ -74,13 +74,13 @@ function (Bb, Mn, Radio, BlockMainView, mpText) {
             });
             
             this.$addRow.click(function(){
-                var $newRow = $("<div class='row js_row'><div class='cell col-4'>Text</div></div>");
+                var $newRow = $("<div class='row js_row'><div class='cell col-12'>Text</div></div>");
                 me.$el.after($newRow);
                 new Row({el: $newRow[0]}).render();                    
             });
             
             this.$addCell.click(function(){
-                var $newCell = $("<div class='cell col-4'>Text</div>");
+                var $newCell = $("<div class='cell col-12'>Text</div>");
                 me.$el.append($newCell);
                 new Cell({el: $newCell[0]}).render();                    
             });

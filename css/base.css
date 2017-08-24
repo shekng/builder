@@ -7,21 +7,45 @@ select {
     margin-top: 20px;
 }
 
-.js_add_row {
+.js_add_row {        
     position: absolute;
+    width: 100%;
+    border-bottom: 1px green dashed;
+    height: 0px;
+    bottom: -10px;
+}
+
+.js_add_row > div {        
     border: 1px green solid;
     width: 20px;
     text-align: center;
-    left: -20px;
-    top: 10px
+    position: absolute;
+    left: -25px;
+    top: -13px;
+    border-radius: 50%;
+    width: 23px;
+    line-height: 22px;
+    vertical-align: middle;
 }
 
 .js_add_cell {
     position: absolute;
-    right: -20px;
+    right: -38px;
     border: 1px green solid;
     width: 20px;
-    text-align: center
+    text-align: center;
+    border-radius: 50%;
+    width: 23px;
+    line-height: 22px;
+    vertical-align: middle;
+}
+
+.js_add_cell::before {
+    border-left: 1px green dashed;
+    content: "";
+    position: absolute;
+    height: 100%;
+    left: -8px;
 }
 
 .js_cell {
